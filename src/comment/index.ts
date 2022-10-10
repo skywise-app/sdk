@@ -1,3 +1,4 @@
+import { JsonApiSuccessfulResponse } from '@skywise-app/types';
 import { customAxios as axios } from '../axios';
 
 // ====================
@@ -14,6 +15,10 @@ export interface ApiComment {
     vote: number; // 点赞数
     lang?: string; // 语言
     image: string; // 附件图片
+}
+
+export interface ApiResComments extends JsonApiSuccessfulResponse {
+    data: Record<string, ApiComment>;
 }
 
 export interface Comment extends ApiComment {
@@ -103,7 +108,7 @@ const getExtraVote = (comment: Comment, lang: string) => {
 
 export async function loadComments(options: LoadOptions): Promise<Comment[]> {
     try {
-        const { data } = await axios.get<Record<string, ApiComment>>(
+        const { data } = await axios.get<ApiResComments>(
             options.useProxy
                 ? getProxyUrl('get', options.app, options.categoryId, options.docId, options.ttl || 1800)
                 : getMongoUrl('get', options.app, options.categoryId, options.docId),
@@ -112,20 +117,22 @@ export async function loadComments(options: LoadOptions): Promise<Comment[]> {
 
         let transferedData: Comment[] = [];
 
-        for (const auid in data) {
+        const list = data.data;
+
+        for (const auid in list) {
             transferedData.push({
-                ...data[auid],
+                ...list[auid],
                 auid: auid,
-                time: new Date(data[auid].time).toLocaleDateString(),
-                media: data[auid].image
+                time: new Date(list[auid].time).toLocaleDateString(),
+                media: list[auid].image
                     ? {
                           type: 'image',
-                          url: `https://game-cdn.appsample.com${data[auid].image}`,
-                          embed: `https://game-cdn.appsample.com${data[auid].image}?height=600&quality=85`,
-                          preview: `https://game-cdn.appsample.com${data[auid].image}?height=300&quality=85`,
-                          thumbnail: `https://game-cdn.appsample.com${data[auid].image}?aspect_ratio=1:1&height=90&quality=85`,
+                          url: `https://game-cdn.appsample.com${list[auid].image}`,
+                          embed: `https://game-cdn.appsample.com${list[auid].image}?height=600&quality=85`,
+                          preview: `https://game-cdn.appsample.com${list[auid].image}?height=300&quality=85`,
+                          thumbnail: `https://game-cdn.appsample.com${list[auid].image}?aspect_ratio=1:1&height=90&quality=85`,
                       }
-                    : getTextMedia(data[auid].text || ''),
+                    : getTextMedia(list[auid].text || ''),
             });
         }
 
