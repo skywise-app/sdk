@@ -41,6 +41,7 @@ type LoadOptions = {
     docId: string;
     lang?: string;
     ttl?: number;
+    sort?: 'time';
 };
 
 // ========== 帮助函数 ==========
@@ -110,12 +111,14 @@ const getExtraVote = (comment: Comment, lang: string) => {
 
 export async function loadComments(options: LoadOptions): Promise<Comment[]> {
     try {
-        const { data } = await axios.get<ApiResComments>(
-            options.useProxy
-                ? getProxyUrl('get', options.app, options.categoryId, options.docId, options.ttl || 1800)
-                : getMongoUrl('get', options.app, options.categoryId, options.docId),
-            { cacheTtl: options.useProxy ? 1800 : 0 }
-        );
+        let url = options.useProxy
+            ? getProxyUrl('get', options.app, options.categoryId, options.docId, options.ttl || 1800)
+            : getMongoUrl('get', options.app, options.categoryId, options.docId);
+        url += `&sort=${options.sort || ''}`;
+
+        const { data } = await axios.get<ApiResComments>(url, {
+            cacheTtl: options.useProxy ? 1800 : 0,
+        });
 
         let transferedData: Comment[] = [];
 
