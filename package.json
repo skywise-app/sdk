@@ -1,12 +1,17 @@
 {
     "name": "@skywise-app/sdk",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "front end sdk",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [
         "/dist"
     ],
+    "exports": {
+        ".": "./dist/index.js",
+        "./rating": "./dist/rating/index.js",
+        "./comment": "./dist/comment/index.js"
+    },
     "scripts": {
         "test": "jest --coverage",
         "lint": "eslint . --fix",

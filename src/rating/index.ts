@@ -20,7 +20,7 @@ export interface ApiResRatings extends JsonApiSuccessfulResponse {
 
 // ====================
 
-export async function LoadRatings(collection: string, ids: string[], proxyTtl = 300) {
+export async function loadRatings(collection: string, ids: string[], proxyTtl = 300) {
     try {
         const { data } = await axios.get<ApiResRatings>(
             `${proxyTtl ? API_PROXY : API}?action=load&ttl=${proxyTtl}&collection=${collection}&keys=${ids.join(',')}`,
