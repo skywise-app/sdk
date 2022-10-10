@@ -9,8 +9,9 @@ const API_PROXY = 'https://cache-proxy.lemonapi.com/skywise/comment/v1';
 // ====================
 
 export interface ApiComment {
+    auid: string; // 作者uid
     name: string; // 作者
-    text: string; // 正文
+    content: string; // 正文
     time: string; // 发表时间
     vote: number; // 点赞数
     lang?: string; // 语言
@@ -19,12 +20,11 @@ export interface ApiComment {
 
 export interface ApiResComments extends JsonApiSuccessfulResponse {
     data: {
-        comments: Record<string, ApiComment>;
+        comments: ApiComment[];
     };
 }
 
 export interface Comment extends ApiComment {
-    auid: string; // 作者uid
     media: null | {
         type: 'image' | 'youtube';
         url: string; // 原始
@@ -122,27 +122,27 @@ export async function loadComments(options: LoadOptions): Promise<Comment[]> {
 
         let transferedData: Comment[] = [];
 
-        const list = data.data.comments;
+        const rawComments = data.data.comments;
 
-        for (const auid in list) {
+        rawComments.forEach(comment => {
             transferedData.push({
-                ...list[auid],
-                auid: auid,
-                time: new Date(list[auid].time).toLocaleDateString(),
-                media: list[auid].image
+                ...comment,
+                time: new Date(comment.time).toLocaleDateString(),
+                media: comment.image
                     ? {
                           type: 'image',
-                          url: `https://game-cdn.appsample.com${list[auid].image}`,
-                          embed: `https://game-cdn.appsample.com${list[auid].image}?height=600&quality=85`,
-                          preview: `https://game-cdn.appsample.com${list[auid].image}?height=300&quality=85`,
-                          thumbnail: `https://game-cdn.appsample.com${list[auid].image}?aspect_ratio=1:1&height=90&quality=85`,
+                          url: `https://game-cdn.appsample.com${comment.image}`,
+                          embed: `https://game-cdn.appsample.com${comment.image}?height=600&quality=85`,
+                          preview: `https://game-cdn.appsample.com${comment.image}?height=300&quality=85`,
+                          thumbnail: `https://game-cdn.appsample.com${comment.image}?aspect_ratio=1:1&height=90&quality=85`,
                       }
-                    : getTextMedia(list[auid].text || ''),
+                    : getTextMedia(comment.content || ''),
             });
-        }
+        });
 
-        transferedData = transferedData
-            .sort((a, b) => {
+        // 没有提供sort的话，启用默认排序
+        if (!options.sort) {
+            transferedData = transferedData.sort((a, b) => {
                 const aVote = Math.floor((a.vote + getExtraVote(a, options.lang || 'en')) / 10);
                 const bVote = Math.floor((b.vote + getExtraVote(b, options.lang || 'en')) / 10);
                 if (aVote > bVote) {
@@ -152,8 +152,10 @@ export async function loadComments(options: LoadOptions): Promise<Comment[]> {
                 } else {
                     return a.time > b.time ? -1 : 1;
                 }
-            })
-            .slice(0, 50);
+            });
+        }
+
+        transferedData = transferedData.slice(0, 50);
         return transferedData;
     } catch (err) {
         console.error('Failed to load comments:', err);
@@ -181,9 +183,9 @@ export function postComment(options: {
 }) {
     const url = getMongoUrl('post', options.app, options.categoryId, options.docId);
     return axios.post(url, {
-        name: options.authorName,
-        uid: options.authorUid,
-        text: options.content,
+        auid: options.authorUid,
+        aname: options.authorName,
+        content: options.content,
         lang: options.lang || 'en',
         image: options.imageUrl || '',
     });
