@@ -10,7 +10,7 @@ const API_PROXY = 'https://cache-proxy.lemonapi.com/skywise/comment/v1';
 
 export interface ApiComment {
     auid: string; // 作者uid
-    name: string; // 作者
+    aname: string; // 作者
     content: string; // 正文
     time: string; // 发表时间
     vote: number; // 点赞数
