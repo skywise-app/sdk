@@ -18,7 +18,9 @@ export interface ApiComment {
 }
 
 export interface ApiResComments extends JsonApiSuccessfulResponse {
-    data: Record<string, ApiComment>;
+    data: {
+        comments: Record<string, ApiComment>;
+    };
 }
 
 export interface Comment extends ApiComment {
@@ -117,7 +119,7 @@ export async function loadComments(options: LoadOptions): Promise<Comment[]> {
 
         let transferedData: Comment[] = [];
 
-        const list = data.data;
+        const list = data.data.comments;
 
         for (const auid in list) {
             transferedData.push({
