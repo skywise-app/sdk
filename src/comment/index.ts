@@ -40,7 +40,7 @@ type LoadOptions = {
     categoryId: string;
     docId: string;
     lang?: string;
-    ttl?: number;
+    ttl?: number; // 浏览器缓存
     sort?: 'time';
 };
 

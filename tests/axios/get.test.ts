@@ -1,5 +1,5 @@
 import defaultAxios from 'axios';
-import { axios } from '../src/index';
+import { axios } from '../../src';
 
 describe('Cache', () => {
     let getSpy: jest.SpyInstance;
