@@ -1,6 +1,6 @@
 {
     "name": "@skywise-app/sdk",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "description": "front end sdk",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

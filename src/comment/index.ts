@@ -195,14 +195,16 @@ export function voteComment(options: {
     app: string;
     categoryId: string;
     docId: string | number;
-    auid: string;
+    auid: string; // 作者uid
     // body
     vote: 'upVote' | 'downVote' | 'delete';
-    uid: string;
+    content?: string;
+    uid: string; // 投票用户uid
 }) {
     const url = getMongoUrl('vote', options.app, options.categoryId, options.docId) + '&auid=' + options.auid;
     return axios.post(url, {
         action: options.vote,
+        content: options.content,
         uid: options.uid,
     });
 }
