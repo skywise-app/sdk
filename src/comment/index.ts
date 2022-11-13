@@ -208,3 +208,25 @@ export function voteComment(options: {
         uid: options.uid,
     });
 }
+
+export function pageview(options: {
+    app: string;
+    categoryId?: string;
+    docId: string | number;
+    auid: string; // 作者uid，page id
+    content?: object;
+}) {
+    voteComment({
+        app: options.app,
+        categoryId: options.categoryId || 'pageview',
+        docId: options.docId,
+        auid: '_' + options.auid,
+        vote: 'upVote',
+        content: options.content ? JSON.stringify(options.content) : '{}',
+        uid: '_ip',
+    })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .then(() => {})
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .catch(() => {});
+}
