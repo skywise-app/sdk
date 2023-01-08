@@ -8,6 +8,9 @@ const API_PROXY = 'https://cache-proxy.lemonapi.com/skywise/comment/v1';
 
 // ====================
 
+/**
+ * 原生数据
+ */
 export interface ApiComment {
     auid: string; // 作者uid
     aname: string; // 作者
@@ -24,6 +27,9 @@ export interface ApiResComments extends JsonApiSuccessfulResponse {
     };
 }
 
+/**
+ * 处理原生数据后产生的二次数据
+ */
 export interface Comment extends ApiComment {
     media: null | {
         type: 'image' | 'youtube';
@@ -42,6 +48,8 @@ type LoadOptions = {
     lang?: string;
     ttl?: number; // 浏览器缓存
     sort?: 'time';
+    page?: number;
+    pageSize?: number;
 };
 
 // ========== 帮助函数 ==========
@@ -111,10 +119,14 @@ const getExtraVote = (comment: Comment, lang: string) => {
 
 export async function loadComments(options: LoadOptions): Promise<Comment[]> {
     try {
+        const { page = 1, pageSize = 50 } = options;
+
         let url = options.useProxy
             ? getProxyUrl('get', options.app, options.categoryId, options.docId, options.ttl || 1800)
             : getMongoUrl('get', options.app, options.categoryId, options.docId);
         url += `&sort=${options.sort || ''}`;
+        url += `&page=${page}`;
+        url += `&pageSize=${pageSize}`;
 
         const { data } = await axios.get<ApiResComments>(url, {
             cacheTtl: options.useProxy ? 1800 : 0,
@@ -155,7 +167,7 @@ export async function loadComments(options: LoadOptions): Promise<Comment[]> {
             });
         }
 
-        transferedData = transferedData.slice(0, 50);
+        transferedData = transferedData.slice(0, pageSize);
         return transferedData;
     } catch (err) {
         console.error('Failed to load comments:', err);

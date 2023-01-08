@@ -17,7 +17,7 @@ export const kvdb = {
         }
     },
 
-    set(key: string, value: object | string | number) {
+    set(key: string, value: object | string | number): boolean {
         try {
             switch (typeof value) {
                 case 'object': {

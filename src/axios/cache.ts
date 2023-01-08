@@ -22,7 +22,8 @@ export const getCache = <T = any>(ttl: number, url: string, params: Params): { d
         if (process?.env?.NODE_ENV === 'development') {
             console.log('cache hit', cacheKey, cached);
         }
-        return cached;
+        // 返回一个克隆，避免在下游被污染
+        return JSON.parse(JSON.stringify(cached));
     } else {
         return undefined;
     }
