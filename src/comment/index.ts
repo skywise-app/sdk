@@ -15,6 +15,7 @@ export interface ApiComment {
     auid: string; // 作者uid
     aname: string; // 作者
     content: string; // 正文
+    trans?: Record<string, string>; // 翻译
     time: string; // 发表时间
     vote: number; // 点赞数
     lang?: string; // 语言
