@@ -1,5 +1,5 @@
 import { JsonApiSuccessfulResponse } from '@skywise-app/types';
-import { customAxios as axios } from '../axios';
+import { customAxios as axios } from '../axios/index';
 
 // ====================
 

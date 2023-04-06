@@ -1,4 +1,4 @@
-import { customAxios as axios } from '../axios';
+import { customAxios as axios } from '../axios/index';
 
 type Tags = Record<string, string | boolean | number | null>;
 

@@ -1,5 +1,5 @@
-export { customAxios as axios } from './axios';
-export { datadogFactory } from './datadog';
-export { kvdb } from './kvdb';
-export * as ratingSvc from './rating';
-export * as commentSvc from './comment';
+export { customAxios as axios } from './axios/index';
+export { datadogFactory } from './datadog/index';
+export { kvdb } from './kvdb/index';
+export * as ratingSvc from './rating/index';
+export * as commentSvc from './comment/index';
