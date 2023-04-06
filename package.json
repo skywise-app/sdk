@@ -1,6 +1,6 @@
 {
     "name": "@skywise-app/sdk",
-    "version": "0.3.3",
+    "version": "0.3.4",
     "description": "front end sdk",
     "types": "./dist/cjs/types/index.d.ts",
     "main": "./dist/cjs/index.js",
@@ -11,7 +11,7 @@
         ".": {
             "import": {
                 "types": "./dist/esm/types/index.d.ts",
-                "default": "./dist/esm/index.mjs"
+                "default": "./dist/esm/index.js"
             },
             "require": {
                 "types": "./dist/cjs/types/index.d.ts",
@@ -22,7 +22,7 @@
     "scripts": {
         "clean": "rm -rf ./dist",
         "build": "npm run clean && npm run build:esm && npm run build:cjs",
-        "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv dist/esm/index.js dist/esm/index.mjs",
+        "build:esm": "tsc -p ./configs/tsconfig.esm.json && cp ./src/package-esm.json ./dist/esm/package.json",
         "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
         "test": "jest --coverage",
         "lint": "eslint . --fix",
