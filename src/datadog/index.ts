@@ -1,4 +1,4 @@
-import { customAxios as axios } from '../axios/index';
+import { customAxios as axios } from '../axios/index.js';
 
 type Tags = Record<string, string | boolean | number | null>;
 

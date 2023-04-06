@@ -1,6 +1,6 @@
 import defaultAxios from 'axios';
-import { CustomAxios } from './CustomAxios';
-import { getCache, setCache } from './cache';
+import { CustomAxios } from './CustomAxios.js';
+import { getCache, setCache } from './cache.js';
 
 export const customAxios: CustomAxios = {
     async get(url, config) {
